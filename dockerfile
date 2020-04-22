@@ -61,6 +61,9 @@ RUN pacman -S --noconfirm i3
 RUN pacman -S --noconfirm expect
 # --- END ставим необходимое ПО ---
 
+RUN pacman -S --noconfirm tmux thunar ranger w3m termite zip unzip
+RUN pacman -S --noconfirm i3lock dmenu i3blocks scrot xclip compton nitrogen xbindkeys xdotool
+
 USER user
 EXPOSE 22
 EXPOSE 5901
