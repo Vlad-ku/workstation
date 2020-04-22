@@ -2,7 +2,7 @@
 
 ![docker-badge](http://dockeri.co/image/vladv8/workstation)
 
-## Setup
+## Запуск
 
 	docker run --rm -it \
         -e passv='password VNC' \
