@@ -48,7 +48,8 @@ RUN pacman -S --noconfirm xorg-xauth
 RUN pacman -S --noconfirm openssh
 RUN pacman -S --noconfirm ttf-dejavu
 # генерируем ключ сервера для SSH
-RUN ssh-keygen -N '' -f /etc/ssh/ssh_host_rsa_key
+# RUN ssh-keygen -N '' -f /etc/ssh/ssh_host_rsa_key
+RUN ssh-keygen -t ecdsa -b 521 -N '' -f /etc/ssh/ssh_host_ecdsa_key
 # --- END ставим X-ы, ssh и шрифты ---
 
 
@@ -60,47 +61,33 @@ RUN pacman -S --noconfirm i3
 RUN pacman -S --noconfirm expect
 # --- END ставим необходимое ПО ---
 
-
-# --- BEGIN настройка VNC ---
-USER user
-RUN \
-    cd ~                                                                                        &&  \
-    echo '#!/usr/bin/expec'                                                  > startvnc.sh      &&  \
-    echo "spawn /usr/sbin/vncserver"                                        >> startvnc.sh      &&  \
-    echo "expect \"Password:\""                                             >> startvnc.sh      &&  \
-    echo "send   \"Pn2LpHJkfkBSBZa3ZBr76FoC4\r\""                           >> startvnc.sh      &&  \
-    echo "expect \"Verify:\""                                               >> startvnc.sh      &&  \
-    echo "send   \"Pn2LpHJkfkBSBZa3ZBr76FoC4\r\""                           >> startvnc.sh      &&  \
-    echo "expect \"Would you like to enter a view-only password (y/n)?\""   >> startvnc.sh      &&  \
-    echo "send   \"n\r\""                                                   >> startvnc.sh      &&  \
-    echo "set timeout -1"                                                   >> startvnc.sh      &&  \
-    echo "expect eof"                                                       >> startvnc.sh      &&  \
-    expect startvnc.sh                                                                          &&  \
-    vncserver -kill :1                                                                          &&  \
-    echo '#!/bin/sh'                                                         > ~/.vnc/xstartup  &&  \
-    echo "exec i3"                                                          >> ~/.vnc/xstartup
-USER root
-# --- END настройка VNC ---
-
-
-# RUN \
-    # mkdir -p ~/.vnc                   && \
-    # echo "exec i3" > ~/.vnc/xstartup
-
-# 1. настройка vncserver (что бы инициализировать папку, и перезаписать запускаемую оболочку)
-# 2. настройка паролей (админ и рут) для ssh
-# 3. настройка авто включения vnc (с настройкой пароля и ответа на вопросы)
-#       https://habr.com/ru/post/498004/
-# 4. vnc запуск endpoint-ом
-
-# RUN pacman -S --noconfirm nodejs npm
-
-
-# --- BEGIN назначаем всем пароли ---
-# RUN echo "root:KYPafEy9UpnzZ3kW4PYu6vbdk" | chpasswd
-# RUN echo "user:PMRpPJJ9CGtDKr4KefkxT9Hpi" | chpasswd
-# --- END назначаем всем пароли ---
-
 USER user
 EXPOSE 22
 EXPOSE 5901
+
+ENV passv='vivaldi8'
+ENV passr='vivaldi8'
+ENV passu='vivaldi8'
+
+ENTRYPOINT \
+    cd ~                                                                                      && \
+    echo '#!/usr/bin/expec'                                                > startvnc.sh      && \
+    echo 'spawn /usr/sbin/vncserver'                                      >> startvnc.sh      && \
+    echo 'expect "Password:"'                                             >> startvnc.sh      && \
+    echo 'send   "$env(passv)\r"'                                         >> startvnc.sh      && \
+    echo 'expect "Verify:"'                                               >> startvnc.sh      && \
+    echo 'send   "$env(passv)\r"'                                         >> startvnc.sh      && \
+    echo 'expect "Would you like to enter a view-only password (y/n)?"'   >> startvnc.sh      && \
+    echo 'send   "n\r"'                                                   >> startvnc.sh      && \
+    echo 'set timeout -1'                                                 >> startvnc.sh      && \
+    echo 'expect eof'                                                     >> startvnc.sh      && \
+    expect startvnc.sh                                                                        && \
+    rm -rf startvnc.sh                                                                        && \
+    vncserver -kill :1                                                                        && \
+    echo '#!/bin/sh'                                                       > ~/.vnc/xstartup  && \
+    echo 'exec i3'                                                        >> ~/.vnc/xstartup  && \
+    echo "root:$passr" | sudo chpasswd                                                        && \
+    echo "user:$passu" | sudo chpasswd                                                        && \
+    vncserver                                                                                 && \
+    sudo /usr/sbin/sshd                                                                       && \
+    bash
