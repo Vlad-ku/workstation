@@ -2,6 +2,7 @@ FROM archlinux
 
 MAINTAINER vladv8
 
+
 # --- BEGIN обновляемся ---
 RUN pacman -Sy --noconfirm archlinux-keyring && pacman -Syyu --noconfirm
 RUN pacman -S  --noconfirm git sudo
@@ -61,8 +62,36 @@ RUN pacman -S --noconfirm i3
 RUN pacman -S --noconfirm expect
 # --- END ставим необходимое ПО ---
 
-RUN pacman -S --noconfirm tmux thunar ranger w3m termite zip unzip
-RUN pacman -S --noconfirm i3lock dmenu i3blocks scrot xclip compton nitrogen xbindkeys xdotool
+
+# --- BEGIN остальное ПО ---
+RUN pacman -S --noconfirm   \
+    tmux                    \
+    thunar                  \
+    ranger                  \
+    w3m                     \
+    termite                 \
+    zip                     \
+    unzip
+
+RUN pacman -S --noconfirm   \
+    i3lock                  \
+    dmenu                   \
+    i3blocks                \
+    scrot                   \
+    xclip                   \
+    compton                 \
+    nitrogen                \
+    xbindkeys               \
+    xdotool
+
+RUN pacman -S --noconfirm   \
+    iproute2
+# --- BEGIN остальное ПО ---
+
+
+# TODO не работает dmenu
+# TODO поставить шрифты (для vim)
+# TODO домашнюю папку в том
 
 USER user
 EXPOSE 22
