@@ -66,26 +66,33 @@ RUN pacman -S --noconfirm expect
 # --- BEGIN остальное ПО ---
 RUN pacman -S --noconfirm   \
     tmux                    \
-    thunar                  \
     ranger                  \
     w3m                     \
-    termite                 \
-    zip                     \
-    unzip
-
+    thunar                  \
+    termite
+# рабочий стол
 RUN pacman -S --noconfirm   \
-    i3lock                  \
     dmenu                   \
     i3blocks                \
-    scrot                   \
-    xclip                   \
-    compton                 \
-    nitrogen                \
+    i3lock
+# перехват клавиш / эмуляция клавиатуры
+RUN pacman -S --noconfirm   \
     xbindkeys               \
     xdotool
-
+# работа с архивами
+RUN pacman -S --noconfirm   \
+    zip                     \
+    unzip
+# создание скриншота / работа с буфером
+RUN pacman -S --noconfirm   \
+    scrot                   \
+    xclip
+# аналог net-tools
 RUN pacman -S --noconfirm   \
     iproute2
+# другое крупное ПО
+RUN pacman -S --noconfirm   \
+    chromium
 # --- BEGIN остальное ПО ---
 
 
