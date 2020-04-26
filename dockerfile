@@ -93,12 +93,28 @@ RUN pacman -S --noconfirm   \
 # другое крупное ПО
 RUN pacman -S --noconfirm   \
     chromium
-# --- BEGIN остальное ПО ---
+# --- END остальное ПО ---
+
+
+# --- BEGIN иконочный шрифт NERDtree и powerline для vim / ссылки nvim / emoji шрифт ---
+USER user
+RUN \
+    mkdir -p ~/.local/share/fonts   && \
+    cd ~/.local/share/fonts         && \
+    curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
+RUN \
+    mkdir ~/.vim                    && \
+    ln -s ~/.vim ~/.config/nvim     && \
+    ln -s ~/.vimrc ~/.vim/init.vim
+USER root
+RUN pacman -S --noconfirm noto-fonts-emoji
+# --- END иконочный шрифт NERDtree и powerline для vim / ссылки nvim / emoji шрифт ---
 
 
 # TODO не работает dmenu
-# TODO поставить шрифты (для vim)
 # TODO домашнюю папку в том
+# TODO тема для thunar и остального
+# TODO прокинуть docker
 
 USER user
 EXPOSE 22
