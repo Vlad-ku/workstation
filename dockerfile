@@ -49,7 +49,6 @@ RUN pacman -S --noconfirm xorg-xauth
 RUN pacman -S --noconfirm openssh
 RUN pacman -S --noconfirm ttf-dejavu
 # генерируем ключ сервера для SSH
-# RUN ssh-keygen -N '' -f /etc/ssh/ssh_host_rsa_key
 RUN ssh-keygen -t ecdsa -b 521 -N '' -f /etc/ssh/ssh_host_ecdsa_key
 # --- END ставим X-ы, ssh и шрифты ---
 
@@ -65,6 +64,7 @@ RUN pacman -S --noconfirm expect
 
 # --- BEGIN остальное ПО ---
 RUN pacman -S --noconfirm   \
+    htop                    \
     tmux                    \
     ranger                  \
     w3m                     \
@@ -111,38 +111,53 @@ RUN pacman -S --noconfirm noto-fonts-emoji
 # --- END иконочный шрифт NERDtree и powerline для vim / ссылки nvim / emoji шрифт ---
 
 
+# --- BEGIN ставим систему инициализации ---
+USER user
+RUN yay -S --noconfirm sysvinit
+USER root
+# --- END ставим систему инициализации ---
+
+
+# --- BEGIN настройка VNC, i3, и паролей ---
+USER user
+RUN \
+    cd ~                                                                                    && \
+    echo '#!/usr/bin/expec'                                                > startvnc.sh    && \
+    echo 'spawn /usr/sbin/vncserver'                                      >> startvnc.sh    && \
+    echo 'expect "Password:"'                                             >> startvnc.sh    && \
+    echo 'send   "vivaldi8\r"'                                            >> startvnc.sh    && \
+    echo 'expect "Verify:"'                                               >> startvnc.sh    && \
+    echo 'send   "vivaldi8\r"'                                            >> startvnc.sh    && \
+    echo 'expect "Would you like to enter a view-only password (y/n)?"'   >> startvnc.sh    && \
+    echo 'send   "n\r"'                                                   >> startvnc.sh    && \
+    echo 'set timeout -1'                                                 >> startvnc.sh    && \
+    echo 'expect eof'                                                     >> startvnc.sh    && \
+    expect startvnc.sh                                                                      && \
+    rm -rf startvnc.sh                                                                      && \
+    vncserver -kill :1                                                                      && \
+    echo '#!/bin/sh'        > /home/user/.vnc/xstartup                                      && \
+    echo 'exec i3'         >> /home/user/.vnc/xstartup                                      && \
+    echo "root:vivaldi8" | sudo chpasswd                                                    && \
+    echo "user:vivaldi8" | sudo chpasswd
+USER root
+# --- END настройка VNC, i3, и паролей ---
+
+
+# --- BEGIN настраиваем службы ---
+RUN \
+    echo "ab:123:Once:su user -c vncserver"     >> /etc/inittab     && \
+    echo "ac:123:Once:/usr/sbin/sshd -D"        >> /etc/inittab
+# --- END настраиваем службы ---
+
+
 # TODO не работает dmenu
 # TODO домашнюю папку в том
 # TODO тема для thunar и остального
 # TODO прокинуть docker
 
-USER user
+
+# USER user
 EXPOSE 22
 EXPOSE 5901
 
-ENV passv='vivaldi8'
-ENV passr='vivaldi8'
-ENV passu='vivaldi8'
-
-ENTRYPOINT \
-    cd ~                                                                                      && \
-    echo '#!/usr/bin/expec'                                                > startvnc.sh      && \
-    echo 'spawn /usr/sbin/vncserver'                                      >> startvnc.sh      && \
-    echo 'expect "Password:"'                                             >> startvnc.sh      && \
-    echo 'send   "$env(passv)\r"'                                         >> startvnc.sh      && \
-    echo 'expect "Verify:"'                                               >> startvnc.sh      && \
-    echo 'send   "$env(passv)\r"'                                         >> startvnc.sh      && \
-    echo 'expect "Would you like to enter a view-only password (y/n)?"'   >> startvnc.sh      && \
-    echo 'send   "n\r"'                                                   >> startvnc.sh      && \
-    echo 'set timeout -1'                                                 >> startvnc.sh      && \
-    echo 'expect eof'                                                     >> startvnc.sh      && \
-    expect startvnc.sh                                                                        && \
-    rm -rf startvnc.sh                                                                        && \
-    vncserver -kill :1                                                                        && \
-    echo '#!/bin/sh'                                                       > ~/.vnc/xstartup  && \
-    echo 'exec i3'                                                        >> ~/.vnc/xstartup  && \
-    echo "root:$passr" | sudo chpasswd                                                        && \
-    echo "user:$passu" | sudo chpasswd                                                        && \
-    vncserver                                                                                 && \
-    sudo /usr/sbin/sshd                                                                       && \
-    bash
+ENTRYPOINT ["/usr/sbin/init", "1"]
