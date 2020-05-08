@@ -1,44 +1,21 @@
 # --- BEGIN обновляемся ---
+# sudo pacman -Sy --noconfirm archlinux-keyring && \
+# sudo pacman -Syyu --noconfirm
+
 sudo pacman -Syu
-sudo pacman -S --noconfirm git
 # --- END обновляемся ---
 
 
-# --- BEGIN установка yay ---
-# base-devel для fakeroot
-sudo pacman -S --noconfirm base-devel
-cd ~            && git clone https://aur.archlinux.org/yay-git.git
-cd ~/yay-git    && makepkg -si --noconfirm
-cd ~            && rm -rf yay-git
-# --- END установка yay ---
-
-
-# --- BEGIN настройка дот файлов ---
-cd ~
-git clone https://github.com/Vlad-ku/home-conf.git
-mv ~/home-conf/.git ~/
-rm -rf ~/home-conf
-git reset --hard
-# --- END настройка дот файлов ---
-
-
-# --- BEGIN ставим X-ы и шрифты ---
-sudo pacman -S --noconfirm xorg-xauth
-sudo pacman -S --noconfirm ttf-dejavu
-# --- END ставим X-ы и шрифты ---
-
-
-# --- BEGIN ставим необходимое ПО ---
-sudo pacman -S --noconfirm vim neovim
-sudo pacman -S --noconfirm tigervnc
-sudo pacman -S --noconfirm i3
-# для ответов на вопросы при настройке VNC
-sudo pacman -S --noconfirm expect
-# --- END ставим необходимое ПО ---
-
-
 # --- BEGIN остальное ПО ---
+# X-ы, шрифты и VNC
 sudo pacman -S --noconfirm  \
+    xorg-server             \
+    ttf-dejavu              \
+    tigervnc expect
+# топ
+sudo pacman -S --noconfirm  \
+    git                     \
+    vim neovim              \
     htop                    \
     tmux                    \
     ranger                  \
@@ -47,6 +24,7 @@ sudo pacman -S --noconfirm  \
     termite
 # рабочий стол
 sudo pacman -S --noconfirm  \
+    i3                      \
     dmenu                   \
     i3blocks                \
     i3lock
@@ -70,20 +48,43 @@ sudo pacman -S --noconfirm  \
     chromium
 # --- END остальное ПО ---
 
-exit 0
+
+# --- BEGIN установка yay ---
+# base-devel для fakeroot
+sudo pacman -S --noconfirm base-devel
+cd ~            && git clone https://aur.archlinux.org/yay-git.git
+cd ~/yay-git    && makepkg -si --noconfirm
+cd ~            && rm -rf yay-git
+# --- END установка yay ---
+
+
+# --- BEGIN настройка дот файлов ---
+cd ~
+git clone https://github.com/Vlad-ku/home-conf.git
+mv ~/home-conf/.git ~/
+rm -rf ~/home-conf
+git reset --hard
+# --- END настройка дот файлов ---
+
 
 # --- BEGIN иконочный шрифт NERDtree и powerline для vim / ссылки nvim / emoji шрифт ---
+# шрифты
 mkdir -p ~/.local/share/fonts
-cd ~/.local/share/fonts
-curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
+cd       ~/.local/share/fonts
+curl -fLo \
+    "Droid Sans Mono for Powerline Nerd Font Complete.otf" \
+    "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"
+# ссылки
 mkdir ~/.vim
 ln -s ~/.vim ~/.config/nvim
 ln -s ~/.vimrc ~/.vim/init.vim
-pacman -S --noconfirm noto-fonts-emoji
+# emoji
+sudo pacman -S --noconfirm noto-fonts-emoji
 # --- END иконочный шрифт NERDtree и powerline для vim / ссылки nvim / emoji шрифт ---
 
 
-# --- BEGIN настройка VNC, i3, и паролей ---
+# --- BEGIN настройка VNC и i3 ---
+# VNC
 cd ~
 echo '#!/usr/bin/expec'                                                  > startvnc.sh
 echo 'spawn /usr/sbin/vncserver'                                        >> startvnc.sh
@@ -98,20 +99,11 @@ echo 'expect eof'                                                       >> start
 expect startvnc.sh
 rm -rf startvnc.sh
 vncserver -kill :1
-echo '#!/bin/sh'        > /home/user/.vnc/xstartup
-echo 'exec i3'         >> /home/user/.vnc/xstartup
-echo "root:vivaldi8" | sudo chpasswd
-echo "user:vivaldi8" | sudo chpasswd
-# --- END настройка VNC, i3, и паролей ---
+# i3
+echo '#!/bin/sh'        > ~/.vnc/xstartup
+echo 'exec i3'         >> ~/.vnc/xstartup
+# --- END настройка VNC и i3 ---
 
 
-# --- BEGIN настраиваем службы ---
-echo "ab:123:Once:su user -c vncserver"     >> /etc/inittab
-echo "ac:123:Once:/usr/sbin/sshd -D"        >> /etc/inittab
-# --- END настраиваем службы ---
-
-
-# TODO не работает dmenu
-# TODO домашнюю папку в том
-# TODO тема для thunar и остального
-# TODO прокинуть docker
+xbindkeys
+vncserver
