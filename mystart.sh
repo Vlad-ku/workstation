@@ -1,9 +1,19 @@
 # --- BEGIN обновляемся ---
-# sudo pacman -Sy --noconfirm archlinux-keyring && \
-# sudo pacman -Syyu --noconfirm
-
-sudo pacman -Syu
+sudo pacman -Syu --noconfirm
+# sudo pacman -S --noconfirm reflector
+sudo reflector -l 200 -p https --sort rate --save /etc/pacman.d/mirrorlist
+sudo pacman -Syu --noconfirm
+sudo pacman -S --noconfirm git
 # --- END обновляемся ---
+
+
+# --- BEGIN установка yay ---
+# base-devel для fakeroot
+sudo pacman -S --noconfirm base-devel
+cd ~            && git clone https://aur.archlinux.org/yay-git.git
+cd ~/yay-git    && makepkg -si --noconfirm
+cd ~            && rm -rf yay-git
+# --- END установка yay ---
 
 
 # --- BEGIN остальное ПО ---
@@ -14,7 +24,6 @@ sudo pacman -S --noconfirm  \
     tigervnc expect
 # топ
 sudo pacman -S --noconfirm  \
-    git                     \
     vim neovim              \
     htop                    \
     tmux                    \
@@ -30,8 +39,9 @@ sudo pacman -S --noconfirm  \
     i3lock
 # перехват клавиш / эмуляция клавиатуры
 sudo pacman -S --noconfirm  \
-    xbindkeys               \
     xdotool
+yay -S --noconfirm          \
+    xbindkeys
 # работа с архивами
 sudo pacman -S --noconfirm  \
     zip                     \
@@ -40,22 +50,10 @@ sudo pacman -S --noconfirm  \
 sudo pacman -S --noconfirm  \
     scrot                   \
     xclip
-# аналог net-tools
-sudo pacman -S --noconfirm  \
-    iproute2
 # другое крупное ПО
 sudo pacman -S --noconfirm  \
     chromium
 # --- END остальное ПО ---
-
-
-# --- BEGIN установка yay ---
-# base-devel для fakeroot
-sudo pacman -S --noconfirm base-devel
-cd ~            && git clone https://aur.archlinux.org/yay-git.git
-cd ~/yay-git    && makepkg -si --noconfirm
-cd ~            && rm -rf yay-git
-# --- END установка yay ---
 
 
 # --- BEGIN настройка дот файлов ---
@@ -105,5 +103,8 @@ echo 'exec i3'         >> ~/.vnc/xstartup
 # --- END настройка VNC и i3 ---
 
 
-xbindkeys
+# пароли
+# echo "root:vivaldi8"    | sudo chpasswd
+# echo "vagrant:vivaldi8" | sudo chpasswd
+
 vncserver
