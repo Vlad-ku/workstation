@@ -67,6 +67,10 @@ if stat['progs']:
         ['termite',             'pac'],
         ['cryfs',               'pac'],
         ['pass',                'pac'],
+        # разработка
+        ['nodejs npm',          'pac'],
+        ['docker',              'pac'],
+        ['docker-compose',      'pac'],
         # рабочий стол
         ['i3-gaps',             'pac'],
         ['dmenu',               'pac'],
@@ -81,6 +85,19 @@ if stat['progs']:
         # создание скриншота / работа с буфером
         ['scrot',               'pac'],
         ['xclip',               'pac'],
+        # звук
+        #  ['alsa-utils',          'pac'],
+        #  ['alsa-plugins',        'pac'],
+        #  ['pulseaudio',          'pac'],
+        #  ['pulseaudio-alsa',     'pac'],
+        # 'плюшки'
+        #  ['vlc',                 'pac'],
+        #  ['xorg-xbacklight',     'pac'], # управление подсветкой
+        #  ['nitrogen',            'pac'], # фон рабочего стола
+        #  ['dosfstools',          'pac'], # mkfs форматирование fat
+        #  ['ntfsprogs',           'pac'], # mkfs форматирование ntfs
+        #  ['dunst',               'pac'], # уведомления на рабочий стол
+        #  ['cronie',              'pac'], # cron
         # другое крупное ПО
         ['chromium',            'pac'],
     ]
