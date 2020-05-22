@@ -24,8 +24,6 @@ if len(sys.argv) == 2:                  # если режим запуска у�
     elif arg in stat.keys():            # если нужен какой токонкретный режим ...
         stat[arg] = True                # активируем только его
 
-# TODO почистить home-conf
-
 def myinstall_pac(x):
     return 'sudo pacman -S --noconfirm --needed '+x
 def myinstall_yay(x):
