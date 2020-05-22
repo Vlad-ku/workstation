@@ -16,6 +16,9 @@ stat = {
     'vnc':      False,
 }
 
+# TODO тут читаем входные аргументы и выполняем (+ объединяющие команды)
+# TODO почистить home-conf
+
 def myinstall_pac(x):
     return 'sudo pacman -S --noconfirm --needed '+x
 def myinstall_yay(x):
