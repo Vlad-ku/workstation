@@ -63,6 +63,7 @@ if stat['progs']:
         ['w3m',                 'pac'],
         ['thunar',              'pac'],
         ['termite',             'pac'],
+        ['fzf',                 'pac'],
         ['cryfs',               'pac'],
         ['pass',                'pac'],
         # разработка
