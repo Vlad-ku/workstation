@@ -75,9 +75,10 @@ if stat['progs']:
         ['dmenu',               'pac'],
         ['i3blocks',            'pac'],
         ['i3lock',              'pac'],
-        # перехват клавиш / эмуляция клавиатуры
+        # перехват клавиш / эмуляция клавиатуры / эмуляция мышки
         ['xdotool',             'pac'],
         ['xbindkeys',           'yay'],
+        ['keynav',              'pac'],
         # работа с архивами
         ['zip',                 'pac'],
         ['unzip',               'pac'],
