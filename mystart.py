@@ -79,6 +79,7 @@ if stat['progs']:
         ['xdotool',             'pac'],
         ['xbindkeys',           'yay'],
         ['keynav',              'pac'],
+        ['unclutter',           'pac'],
         # работа с архивами
         ['zip',                 'pac'],
         ['unzip',               'pac'],
