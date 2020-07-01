@@ -94,6 +94,8 @@ if stat['progs']:
         #  ['pulseaudio',          'pac'],
         #  ['pulseaudio-alsa',     'pac'],
         # 'плюшки'
+        #  ['ncdu',                'pac'], # аналог du (анализатор занятости диска)
+        #  ['pydf',                'pac'], # аналог df
         #  ['vlc',                 'pac'],
         #  ['xorg-xbacklight',     'pac'], # управление подсветкой
         #  ['nitrogen',            'pac'], # фон рабочего стола
