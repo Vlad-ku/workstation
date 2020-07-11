@@ -124,7 +124,7 @@ if stat['nicevim']:
     os.system('mkdir -p ~/.local/share/fonts')
     os.system('cd ~/.local/share/fonts && curl -fLo "Droid Sans Mono for Powerline Nerd Font Complete.otf" "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DroidSansMono/complete/Droid%20Sans%20Mono%20Nerd%20Font%20Complete.otf"')
     # ссылки
-    os.system('mkdir ~/.vim')
+    os.system('mkdir -p ~/.vim')
     os.system('ln -s ~/.vim ~/.config/nvim')
     os.system('ln -s ~/.vimrc ~/.vim/init.vim')
     # emoji
